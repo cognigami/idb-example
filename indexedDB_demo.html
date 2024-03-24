@@ -1,0 +1,132 @@
+<html>
+	<button id="openDB">Open DB</button>
+	<button id="addData">Add data</button>
+	<button id="showData">Show Data</button>
+	<button id="deleteData">Delete random row</button>
+	<div id="result">Results will show here.</div>
+	<script>
+		let db;
+		
+		const STORE_NAME = "SimpleStore";
+		const result = document.getElementById("result");
+
+		function openDB() {
+		  const req = indexedDB.open("SimpleDB");
+		  req.onupgradeneeded = (event) => defineDBSchema(event);
+		  req.onsuccess = (event) => dbOkay(event);
+		  req.onerror = (event) => err_handler(event);
+		}
+
+		function dbOkay(event) {
+		  db = event.target.result;
+		  result.textContent = "Got the DB";
+		}
+
+		function err_handler(event) {
+		  result.textContent = "The following error occured: " + event.target.errorCode; 
+		}
+
+		function defineDBSchema(event) {
+		  event.target.result.createObjectStore(STORE_NAME, {keyPath: "id", autoIncrement: true});
+		}
+
+		function getStore() {
+		  var tx = db.transaction(STORE_NAME, "readwrite");
+		  return tx.objectStore(STORE_NAME);
+		}
+
+		function addData() {
+		  var store = getStore();
+		  var rows = [];
+		  rows.push({name: "Apple", weight: 102});
+		  rows.push({name: "Banana", weight: 125});
+		  rows.push({name: "Orange", weight: 141.7});
+		  result.textContent = "";
+		  rows.forEach((row) => {
+			req = store.add(row);
+			req.onsuccess = () => {    
+				var paragraph = document.createElement("p");
+				paragraph.textContent = "Added " + row.name;
+				result.append(paragraph);
+		    };
+		    req.onerror = (event) => err_handler(event);
+		  });
+		}
+
+		function showData() {
+		  var store = getStore();
+		  var data_table = document.createElement("table");
+		  var row_element = document.createElement("tr");
+		  var td_element = document.createElement("td");
+		  var head_row = makeHead(row_element, td_element);
+		  data_table.append(head_row);
+		  
+		  var req = store.openCursor();
+		  req.onsuccess = (event) => populateTable(event, store, data_table, row_element, td_element);
+		  req.onerror = (event) => err_handler(event);
+
+		  result.textContent = "";
+		  result.append(data_table);
+		}
+
+		function populateTable(cursor, store, dt, row, cell) {
+		  var curs = cursor.target.result;
+		  if (curs) {
+		    req = store.get(curs.key);
+		    req.onsuccess = (event) => makeRow(curs.key, event, dt, row, cell);
+		    curs.continue();
+		  }
+		}
+
+		function makeHead(row, cell) {
+		  var col_heads = ["ID", "Fruit", "Weight"];
+		  var head_row = row.cloneNode(true);
+		  col_heads.forEach((col) => {
+		    column = cell.cloneNode(true);
+		    column.textContent = col;
+		    head_row.append(column);
+		  });
+		  return head_row;
+		}
+
+		function makeRow(key, db_values, dt, row, cell) {
+	        dbv = db_values.target.result
+	        data_row = row.cloneNode(true);
+	        vals = [key, dbv.name, dbv.weight];
+	        vals.forEach((val) => {
+				column = cell.cloneNode(true);
+				column.textContent = val;
+				data_row.append(column);
+	        });
+		    dt.append(data_row);
+		}
+
+		function deleteData() {
+			var store = getStore();
+			var max_records = 0;
+			var req = store.count();
+			req.onsuccess = (event) => {
+				max_records = event.target.result;
+				console.log(max_records);
+				if (max_records > 0) {
+					del_record = Math.floor(Math.random()*max_records);
+					console.log(del_record);
+					del_req = store.delete(del_record);
+					del_req.onsuccess = (event) => {
+						showData();
+					};
+				}
+			};
+		}
+		
+		open_button = document.getElementById("openDB");
+		add_button = document.getElementById("addData");
+		show_button = document.getElementById("showData");
+		delete_button = document.getElementById("deleteData");
+
+		open_button.addEventListener("click", () => openDB());
+		add_button.addEventListener("click", () => addData());
+		show_button.addEventListener("click", () => showData());
+		delete_button.addEventListener("click", () => deleteData());
+	</script>
+</html>
