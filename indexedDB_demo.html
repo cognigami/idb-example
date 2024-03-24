@@ -107,10 +107,8 @@
 			var req = store.count();
 			req.onsuccess = (event) => {
 				max_records = event.target.result;
-				console.log(max_records);
 				if (max_records > 0) {
 					del_record = Math.floor(Math.random()*max_records);
-					console.log(del_record);
 					del_req = store.delete(del_record);
 					del_req.onsuccess = (event) => {
 						showData();
