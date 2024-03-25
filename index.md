@@ -29,14 +29,14 @@ The following example is a simple, one-page application. The application provide
 ### Create the user interface: Scaffolding
 Before you begin: create an empty file in your editor.
 
-1. In an empty file, in your text editor, add an HTML element.
+1\. In an empty file, in your text editor, add an HTML element.
 
 ```
 <html>
 </html>
 ```
 
-2. Inside your HTML element, add four `button` elements. Give each element a unique id attribute. The buttons enable you to interact with the database.
+2\. Inside your HTML element, add four `button` elements. Give each element a unique id attribute. The buttons enable you to interact with the database.
 
 ```
 <html>
@@ -47,7 +47,7 @@ Before you begin: create an empty file in your editor.
 </html>
 ```
 
-3. Below the `button` elements, add a `div` element. Give the `div` element a unique `id` attribute. You can use the `div` element to display the status of your database operations.
+3\. Below the `button` elements, add a `div` element. Give the `div` element a unique `id` attribute. You can use the `div` element to display the status of your database operations.
 
 ```
 <html>
@@ -55,11 +55,11 @@ Before you begin: create an empty file in your editor.
 	<button id="addData">Add data</button>
 	<button id="showData">Show Data</button>
 	<button id="deleteData">Delete random row</button>
-<div id="result">Results will show here.</div>
+	<div id="result">Results will show here.</div>
 </html>
 ```
 
-4. Add a `script` element to hold the code that interacts with the database.
+4\. Add a `script` element to hold the code that interacts with the database.
 
 ```
 <html>
@@ -67,7 +67,7 @@ Before you begin: create an empty file in your editor.
 	<button id="addData">Add data</button>
 	<button id="showData">Show Data</button>
 	<button id="deleteData">Delete random row</button>
-<div id="result">Results will show here.</div>
+	<div id="result">Results will show here.</div>
 	<script>
 	</script>
 </html>
@@ -158,7 +158,7 @@ Be sure to remove any test statements before you continue to the next topic.
 ### Open a database
 Recall that IndexedDB is an asynchronous process, and requires you to create callback functions for each interaction. In this topic, you add code to the openDB() function that you created in **Create user interface: Basic interactivity** topic. You also create additional functions to handle callback operations from IndexedDB.
 
-1. Inside your `script` element, create a global variable to hold a reference to your database.
+1\. Inside your `script` element, create a global variable to hold a reference to your database.
 
 ```
 	<script>
@@ -172,7 +172,7 @@ Recall that IndexedDB is an asynchronous process, and requires you to create cal
 	</script>
 ```
 
-2. In your `openDB()` function, call the `open()` method on IndexedDB to open a database. Specify the name and the version number of the database schema. If the database does not exist, IndexedDB creates a database with the name that you specify in the request.
+2\. In your `openDB()` function, call the `open()` method on IndexedDB to open a database. Specify the name and the version number of the database schema. If the database does not exist, IndexedDB creates a database with the name that you specify in the request.
 
 ```
 		let db;
@@ -184,7 +184,7 @@ Recall that IndexedDB is an asynchronous process, and requires you to create cal
 		}
 ```
 
-3. Create empty functions to handle callback operations for the following conditions: success, error, and schema definition required.
+3\. Create empty functions to handle callback operations for the following conditions: success, error, and schema definition required.
 
 ```
 		let db;
@@ -195,15 +195,15 @@ Recall that IndexedDB is an asynchronous process, and requires you to create cal
 		  req = indexedDB.open(“SimpleDB”, 1);
 		}
 
-        function dbOkay() {
-        }
-        function err_handler() {
-        }		
-        function defineDBSchema() {
-        }		
+		function dbOkay() {
+		}
+		function err_handler() {
+		}		
+		function defineDBSchema() {
+		}		
 ```
 
-4. On your request object, specify the function to invoke for each condition. When IndexedDB invokes a callback function, it passes an `event` object that contains the result of the request. Pass the `event` object to the function.
+4\. On your request object, specify the function to invoke for each condition. When IndexedDB invokes a callback function, it passes an `event` object that contains the result of the request. Pass the `event` object to the function.
 
 ```
         let db;
@@ -217,54 +217,54 @@ Recall that IndexedDB is an asynchronous process, and requires you to create cal
 		  req.onupgradeneeded = (event) => defineDBSchema(event);
 		}
 
-        function dbOkay() {
-        }
-        function err_handler() {
-        }		
-        function defineDBSchema() {
-        }
+		function dbOkay() {
+		}
+		function err_handler() {
+		}		
+		function defineDBSchema() {
+		}
 ```
 
-5. Update your callback function signatures to accept the `event` object.
+5\. Update your callback function signatures to accept the `event` object.
 
 ```
-        ...
-        function dbOkay(event) {
-        }
-        function err_handler(event) {
-        }		
-        function defineDBSchema(event) {
-        }
+		...
+		function dbOkay(event) {
+		}
+		function err_handler(event) {
+		}		
+		function defineDBSchema(event) {
+		}
 ```
 
 
-6. If the open request is successful, assign the database reference to the global variable that you created in step 1. 
+6\. If the open request is successful, assign the database reference to the global variable that you created in step 1. 
 
 ```
-        ...
+		...
 		function dbOkay(event) {
 		  db = event.target.result;
-        }
+		}
 ```
 
-7. Print the status in the result `div` element that you created earlier. 
+7\. Print the status in the result `div` element that you created earlier. 
 ```
-        ...
+		...
 		function dbOkay(event) {
 		  db = event.target.result;
 		  result.textContent = “Got the DB”;
-        }
+		}
 ```
 
-8. Update your `err_handler()` function to report the error to the user.
+8\. Update your `err_handler()` function to report the error to the user.
 ```
-        ...
+		...
 		function err_handler(event) {
 		  result.textContent = “The following error occurred: ” + event.target.errorCode;
-        }
+		}
 ```
 
-9. Before we define our database schema, let’s add another global constant to track the name of our Object Store object. This constant reduces the opportunity for bugs arising from mistyping the name of the ObjectStore. 
+9\. Before we define our database schema, let’s add another global constant to track the name of our Object Store object. This constant reduces the opportunity for bugs arising from mistyping the name of the ObjectStore. 
 
 Add the following line between the `db` global variable and the `result` handle at the top of the `script` element.
 
@@ -277,7 +277,7 @@ Add the following line between the `db` global variable and the `result` handle 
 		...
 ```
 
-10. Specify your database schema in the `defineDBSchema()` function. Our database has a single table (SimpleTable), and no indexes. The records should have a `key` field named “id”, and the table should be responsible for incrementing the value of the field.
+10\. Specify your database schema in the `defineDBSchema()` function. Our database has a single table (SimpleTable), and no indexes. The records should have a `key` field named “id”, and the table should be responsible for incrementing the value of the field.
 
 ```
 		function defineDBSchema(event) {
@@ -291,7 +291,7 @@ For a more sophisticated application, you should add a callback for a `versionch
 
 For more information about the `versionchange` event, see the API documentation on MDN.
 
-11. Add a helper function to create a Transaction object and return a reference to the `SimpleTable` Object Store.
+11\. Add a helper function to create a Transaction object and return a reference to the `SimpleTable` Object Store.
 
 ```
 		...
@@ -302,9 +302,9 @@ For more information about the `versionchange` event, see the API documentation 
 		function getStore() {
 		  tx = db.Transaction(STORE_NAME, “readwrite”);
 		  return tx.objectStore(STORE_NAME);
-        }
+		}
 
-	    ...
+		...
 ```
 
 We can call the `getStore` function each time we want to perform an operation on the database. 
@@ -312,14 +312,14 @@ We can call the `getStore` function each time we want to perform an operation on
 ### Add data to the database
 For the sake of simplicity, this task defines some static data to add to the database each time the user clicks on the **Add Data** button. This task adds code to the `getData()` function that you created earlier.
 
-1. In the getData() function, call the `getStore()` function that you created in a previous task to retrieve a reference to the Object Store for SimpleTable.
+1\. In the getData() function, call the `getStore()` function that you created in a previous task to retrieve a reference to the Object Store for SimpleTable.
 ```
 		getData() {
 		  var store = getStore();
-        }
+		}
 ```
 
-2. Create an array of data to add to SimpleTable. Under normal circumstances, this data would come from user input or some generated source. For brevity, let’s add static data.
+2\. Create an array of data to add to SimpleTable. Under normal circumstances, this data would come from user input or some generated source. For brevity, let’s add static data.
 
 ```
 		getData() {
@@ -328,10 +328,10 @@ For the sake of simplicity, this task defines some static data to add to the dat
 		  rows.push({name: “Apple”, weight: 102});
 		  rows.push({name: “Banana”, weight: 125});
 		  rows.push({name: “Orange”, weight: 141.7});
-        }
+		}
 ```
 
-3. Clear the content of the `div` element used to display results.
+3\. Clear the content of the `div` element used to display results.
 ```
 		getData() {
 		  var store = getStore();
@@ -340,11 +340,11 @@ For the sake of simplicity, this task defines some static data to add to the dat
 		  rows.push({name: “Banana”, weight: 125});
 		  rows.push({name: “Orange”, weight: 141.7});
 		  results.textContent = “”
-        }
+		}
 ```
 
 
-4. Let’s iterate over each of the rows in our array.
+4\. Let’s iterate over each of the rows in our array.
 ```
 		getData() {
 		  var store = getStore();
@@ -359,7 +359,7 @@ For the sake of simplicity, this task defines some static data to add to the dat
         	}
 ```
 
-5. On each iteration, create a request to add the array element to the SimpleTable Object Store.
+5\. On each iteration, create a request to add the array element to the SimpleTable Object Store.
 ```
 		getData() {
 		  var store = getStore();
@@ -374,7 +374,7 @@ For the sake of simplicity, this task defines some static data to add to the dat
         	}
 ```
 
-6. Register a callback for the `onsuccess` event. In this case, we’ll create the callback function inline, instead of creating a separate function.
+6\. Register a callback for the `onsuccess` event. In this case, we’ll create the callback function inline, instead of creating a separate function.
 ```
 		getData() {
 		  var store = getStore();
@@ -392,7 +392,7 @@ For the sake of simplicity, this task defines some static data to add to the dat
         	}
 ```
 
-7. In the callback function, add a `p` element with the name of the row that you added to the database.
+7\. In the callback function, add a `p` element with the name of the row that you added to the database.
 
 ```
 		getData() {
@@ -413,7 +413,7 @@ For the sake of simplicity, this task defines some static data to add to the dat
         	}
 ```
 
-8. Append the `p` element to the results `div`.
+8\. Append the `p` element to the results `div`.
 
 ```
 		getData() {
@@ -433,7 +433,7 @@ For the sake of simplicity, this task defines some static data to add to the dat
 		  });
         	}
 ```
-9. Register the `err_handler()` function that you created earlier to respond to any `onerror` events.
+9\. Register the `err_handler()` function that you created earlier to respond to any `onerror` events.
 
 ```
 		getData() {
@@ -468,7 +468,7 @@ In this task, you create a `populateTable()` function as a callback for the `cur
 ![Request flow for retrieving data from the database](./images/popTable.png)
 
 
-1. Below the empty `addData()` function, add empty functions for the callbacks used in later steps in this task: `populateTable()`, `makeRow()`. You also need a `makeHead()` function to define the table header.
+1\. Below the empty `addData()` function, add empty functions for the callbacks used in later steps in this task: `populateTable()`, `makeRow()`. You also need a `makeHead()` function to define the table header.
 
 ```
 		...
@@ -486,7 +486,7 @@ In this task, you create a `populateTable()` function as a callback for the `cur
 
 ```
 
-2. In the `showData()` function, call the `getStore()` function that you created in a previous task to retrieve a reference to the Object Store for SimpleTable.
+2\. In the `showData()` function, call the `getStore()` function that you created in a previous task to retrieve a reference to the Object Store for SimpleTable.
 
 ```
 		function showData() {
@@ -494,7 +494,7 @@ In this task, you create a `populateTable()` function as a callback for the `cur
 		}
 ```
 
-3. Create HTML elements for the table.
+3\. Create HTML elements for the table.
 
 ```
 		function showData() {
@@ -505,7 +505,7 @@ In this task, you create a `populateTable()` function as a callback for the `cur
 		}
 ```
 
-4. Pass the `row_element` handle and the `td_element` handle to the `makeHead()` function to create a table header.
+4\. Pass the `row_element` handle and the `td_element` handle to the `makeHead()` function to create a table header.
 
 ```
 		function showData() {
@@ -518,7 +518,7 @@ In this task, you create a `populateTable()` function as a callback for the `cur
 		}
 ```
 
-5. In the `makeHead()` function, update the parameter list to accept the row and cell elements passed from `showData()`, and define the header row and return the row.
+5\. In the `makeHead()` function, update the parameter list to accept the row and cell elements passed from `showData()`, and define the header row and return the row.
 
 ```
 		function makeHead(row, cell) {
@@ -533,7 +533,7 @@ In this task, you create a `populateTable()` function as a callback for the `cur
 		}
 ```
 
-6. In the `showData()` function, add the table header to the `table` element.
+6\. In the `showData()` function, add the table header to the `table` element.
 
 ```
 		function showData() {
@@ -547,7 +547,7 @@ In this task, you create a `populateTable()` function as a callback for the `cur
 		}
 ```
 
-7. Create a request for a new `cursor` object from the Object Store. Register the `populateTable()` function as the callback for the `success` event. The `populateTable()` function is responsible for creating the table, so pass the relevant data: the cursor, the Object Store, and the HTML elements.
+7\. Create a request for a new `cursor` object from the Object Store. Register the `populateTable()` function as the callback for the `success` event. The `populateTable()` function is responsible for creating the table, so pass the relevant data: the cursor, the Object Store, and the HTML elements.
 
 ```
 		function showData() {
@@ -558,7 +558,7 @@ In this task, you create a `populateTable()` function as a callback for the `cur
 		  req.onsuccess = (event) => populateTable(event, store, data_table, row_element, td_element);
 ```
 
-8. In the `populateTable()` function, update the parameter list to accept the data passed from `showData()`
+8\. In the `populateTable()` function, update the parameter list to accept the data passed from `showData()`
 
 ```
 		function populateTable(cursor, store, dt, row, cell) {
@@ -566,7 +566,7 @@ In this task, you create a `populateTable()` function as a callback for the `cur
 ```
 
 
-9. Retrieve the cursor. If it’s valid, get the associated record from the Object Store.
+9\. Retrieve the cursor. If it’s valid, get the associated record from the Object Store.
 ```
 		function populateTable(cursor, store, dt, row, cell) {
 		  var curs = cursor.target.result;
@@ -576,7 +576,7 @@ In this task, you create a `populateTable()` function as a callback for the `cur
 		}
 ```
 
-10. If the Object Store sends a `success` event, pass the relevant data to the `makeRow()` function: the key, the record data, the data table, and HTML row and cell elements. 
+10\. If the Object Store sends a `success` event, pass the relevant data to the `makeRow()` function: the key, the record data, the data table, and HTML row and cell elements. 
 ```
 		function populateTable(cursor, store, dt, row, cell) {
 		  var curs = cursor.target.result;
@@ -588,14 +588,14 @@ In this task, you create a `populateTable()` function as a callback for the `cur
 ```
 
 
-11. In the `makeRow()` function, update the parameter list to accept the data passed from `populateTable()`. 
+11\. In the `makeRow()` function, update the parameter list to accept the data passed from `populateTable()`. 
 
 ```
 		function makeRow(key, db_values, dt, row, cell) {
 		}
 ```
 
-12. Retrieve the values from the record and create a new row. Append the row to the HTML table element.
+12\. Retrieve the values from the record and create a new row. Append the row to the HTML table element.
 ```
 		function makeRow(key, db_values, dt, row, cell) {
           	  dbv = db_values.target.result
@@ -610,7 +610,7 @@ In this task, you create a `populateTable()` function as a callback for the `cur
 		}
 ```
 
-13. In the `populateTable()` function, ask for the next key from the cursor.
+13\. In the `populateTable()` function, ask for the next key from the cursor.
 ```
 		function populateTable(cursor, store, dt, row, cell) {
 		  var curs = cursor.target.result;
@@ -623,7 +623,7 @@ In this task, you create a `populateTable()` function as a callback for the `cur
 ```
 
 
-14. In the `showData()` function, Register the `err_handler()` function that you created in a previous task as the callback for the `error` event.
+14\. In the `showData()` function, Register the `err_handler()` function that you created in a previous task as the callback for the `error` event.
 
 ```
 		function showData() {
@@ -640,7 +640,7 @@ In this task, you create a `populateTable()` function as a callback for the `cur
 ### Delete data
 You can delete any record for which you have a valid key. In this task, you choose a key at random, and delete the associated record.
 
-1. In the `deleteData()` function, call the `getStore()` function that you created in a previous task to retrieve a reference to the Object Store for SimpleTable.
+1\. In the `deleteData()` function, call the `getStore()` function that you created in a previous task to retrieve a reference to the Object Store for SimpleTable.
 
 ```
 		function deleteData() {
@@ -648,7 +648,7 @@ You can delete any record for which you have a valid key. In this task, you choo
 		}
 ```
 
-2. Create a variable to store the number of records in the Object Store.
+2\. Create a variable to store the number of records in the Object Store.
 ```
 		function deleteData() {
 			var store = getStore();
@@ -656,7 +656,7 @@ You can delete any record for which you have a valid key. In this task, you choo
 		}
 ```
 
-3. Create a request to count the number of records in the Object Store.
+3\. Create a request to count the number of records in the Object Store.
 
 ```
 		function deleteData() {
@@ -666,7 +666,7 @@ You can delete any record for which you have a valid key. In this task, you choo
 		}
 ```
 
-4. For the sake of brevity, create an inline function as a callback for the `success` event.
+4\. For the sake of brevity, create an inline function as a callback for the `success` event.
 ```
 		function deleteData() {
 			var store = getStore();
@@ -677,7 +677,7 @@ You can delete any record for which you have a valid key. In this task, you choo
 		}
 ```
 
-5. If the number of records is greater than zero, choose one at random, and create a request to delete it.
+5\. If the number of records is greater than zero, choose one at random, and create a request to delete it.
 
 ```
 		function deleteData() {
@@ -694,7 +694,7 @@ You can delete any record for which you have a valid key. In this task, you choo
 		}
 ```
 
-6. If the request is successful, regenerate the data table.
+6\. If the request is successful, regenerate the data table.
 
 ```
 		function deleteData() {
