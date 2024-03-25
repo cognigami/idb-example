@@ -11,17 +11,20 @@ IndexedDB is a complete, transactional, NoSQL database that enables you to store
 ## Core concepts
 The web browser can store multiple IndexedDB databases per origin. Each database contains multiple tables, known as Object Stores. An object store contains a key and a collection of field values for each record. As a developer, you can define one or more indexes over any field in your record schema.
 
-<drawing>
+![IndexedDB architecture](./images/arch.png)
 
 IndexedDB is an asynchronous process in the browser. Each interaction with the database follows a pattern of making a request, and providing callback methods to process the result of the request.
 
 Every request that you make to the database must execute in the context of a transaction. The first step in every interaction is to request a Transaction object from the database, then request an ObjectStore object from the transaction. You perform most operations (create, retrieve, update, delete) on the ObjectStore that you retrieve from a Transaction.
 
-<drawing>
+
+![IndexedDB request flow](./images/request.png)
 
 ## Example
 The following example is a simple, one-page application. The application provides buttons to open the database, add (pre-defined) records, display records, and delete one record at random. The results are displayed in a `div` element on the page.
 
+
+![Screenshot of the user interface](./images/request.png)
 
 ### Create the user interface: Scaffolding
 Before you begin: create an empty file in your editor.
@@ -462,7 +465,8 @@ The `cursor` object sends an `success` event for each key it encounters. You can
 
 In this task, you create a `populateTable()` function as a callback for the `cursor` object’s success event, and a `makeRow()` function as a callback for the Object Store’s `success` event.
 
-<diagram>
+![Request flow for retrieving data from the database](./images/popTable.png)
+
 
 1. Below the empty `addData()` function, add empty functions for the callbacks used in later steps in this task: `populateTable()`, `makeRow()`. You also need a `makeHead()` function to define the table header.
 
