@@ -24,7 +24,7 @@ Every request that you make to the database must execute in the context of a tra
 The following example is a simple, one-page application. The application provides buttons to open the database, add (pre-defined) records, display records, and delete one record at random. The results are displayed in a `div` element on the page.
 
 
-![Screenshot of the user interface](./images/request.png)
+![Screenshot of the user interface](./images/main.png)
 
 ### Create the user interface: Scaffolding
 Before you begin: create an empty file in your editor.
@@ -413,7 +413,7 @@ For the sake of simplicity, this task defines some static data to add to the dat
         }
 ```
 
-7. Append the `p` element to the results `div`.
+8. Append the `p` element to the results `div`.
 
 ```
 		getData() {
@@ -433,7 +433,7 @@ For the sake of simplicity, this task defines some static data to add to the dat
 		  });
         }
 ```
-7. Register the `err_handler()` function that you created earlier to respond to any `onerror` events.
+9. Register the `err_handler()` function that you created earlier to respond to any `onerror` events.
 
 ```
 		getData() {
@@ -576,7 +576,7 @@ In this task, you create a `populateTable()` function as a callback for the `cur
 		}
 ```
 
-9. If the Object Store sends a `success` event, pass the relevant data to the `makeRow()` function: the key, the record data, the data table, and HTML row and cell elements. 
+10. If the Object Store sends a `success` event, pass the relevant data to the `makeRow()` function: the key, the record data, the data table, and HTML row and cell elements. 
 ```
 		function populateTable(cursor, store, dt, row, cell) {
 		  var curs = cursor.target.result;
@@ -588,14 +588,14 @@ In this task, you create a `populateTable()` function as a callback for the `cur
 ```
 
 
-10. In the `makeRow()` function, update the parameter list to accept the data passed from `populateTable()`. 
+11. In the `makeRow()` function, update the parameter list to accept the data passed from `populateTable()`. 
 
 ```
 		function makeRow(key, db_values, dt, row, cell) {
 		}
 ```
 
-11. Retrieve the values from the record and create a new row. Append the row to the HTML table element.
+12. Retrieve the values from the record and create a new row. Append the row to the HTML table element.
 ```
 		function makeRow(key, db_values, dt, row, cell) {
           dbv = db_values.target.result
@@ -610,7 +610,7 @@ In this task, you create a `populateTable()` function as a callback for the `cur
 		}
 ```
 
-12. In the `populateTable()` function, ask for the next key from the cursor.
+13. In the `populateTable()` function, ask for the next key from the cursor.
 ```
 		function populateTable(cursor, store, dt, row, cell) {
 		  var curs = cursor.target.result;
@@ -623,7 +623,7 @@ In this task, you create a `populateTable()` function as a callback for the `cur
 ```
 
 
-13. In the `showData()` function, Register the `err_handler()` function that you created in a previous task as the callback for the `error` event.
+14. In the `showData()` function, Register the `err_handler()` function that you created in a previous task as the callback for the `error` event.
 
 ```
 		function showData() {
@@ -718,6 +718,7 @@ You can delete any record for which you have a valid key. In this task, you choo
 You now have a fully functional web page that stores and retrieves data by using the brower’s IndexedDB API. You can play with this example, try to generate error conditions, and extend it as needed.
 
 MDN maintains a list of libraries that wrap the IndexedDB API for a variety of use-cases. If your application uses the Promise pattern of asynchronous programming (async/await), Jake Archibald’s IDB library is a common tool.
+
 
 
 
