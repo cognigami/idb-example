@@ -78,7 +78,7 @@ Save your file with an .html extension. Now, you can open the HTML file in a web
 ### Create the user interface: Basic interactivity
 Let’s enable the buttons to respond to the code that we write. In this topic, complete the following steps by adding code inside the `script` element that you created in the **Create User Interface: Scaffolding** topic.
 
-1. Create empty functions that should do some work when a user clicks on a button. Because they’re empty, the functions are not useful yet. You start to make them useful by adding code in the following topics. Create a function for each of the four buttons.
+1\. Create empty functions that should do some work when a user clicks on a button. Because they’re empty, the functions are not useful yet. You start to make them useful by adding code in the following topics. Create a function for each of the four buttons.
 
 ```
     ...
@@ -94,7 +94,7 @@ Let’s enable the buttons to respond to the code that we write. In this topic, 
 	</script>
 ```
 
-2. Create a handle for the `div` element. Add the keyword `const` before the variable name so that the handle is read-only in the code.
+2\. Create a handle for the `div` element. Add the keyword `const` before the variable name so that the handle is read-only in the code.
 
 ```
     ...
@@ -113,7 +113,7 @@ Let’s enable the buttons to respond to the code that we write. In this topic, 
 	</script>
 ```
 
-3. Create handles for each of the `button` elements. 
+3\. Create handles for each of the `button` elements. 
 ```
     ...
 	<script>
@@ -129,7 +129,7 @@ Let’s enable the buttons to respond to the code that we write. In this topic, 
 	</script>
 ```
 
-4. Add an event listener to each of the `button` elements by using the handles that you created. Call the `addEventListener` method; listen for the `click` event, and invoke the corresponding function that you created in step 1.
+4\. Add an event listener to each of the `button` elements by using the handles that you created. Call the `addEventListener` method; listen for the `click` event, and invoke the corresponding function that you created in step 1.
 
 ```
     ...
@@ -356,7 +356,7 @@ For the sake of simplicity, this task defines some static data to add to the dat
 		  rows.forEach((row) => {
 			
 		  });
-        }
+        	}
 ```
 
 5. On each iteration, create a request to add the array element to the SimpleTable Object Store.
@@ -371,7 +371,7 @@ For the sake of simplicity, this task defines some static data to add to the dat
 		  rows.forEach((row) => {
 		    req = store.add(row);
 		  });
-        }
+        	}
 ```
 
 6. Register a callback for the `onsuccess` event. In this case, we’ll create the callback function inline, instead of creating a separate function.
@@ -387,9 +387,9 @@ For the sake of simplicity, this task defines some static data to add to the dat
 		    req = store.add(row);
 		    req.onsuccess = () => {
 
-            };
+            	    };
 		  });
-        }
+        	}
 ```
 
 7. In the callback function, add a `p` element with the name of the row that you added to the database.
@@ -408,9 +408,9 @@ For the sake of simplicity, this task defines some static data to add to the dat
 		      paragraph = document.createElement(“p”);
 		      paragraph.textContent = “Added “ + row.name;
 
-            };
+            	    };
 		  });
-        }
+        	}
 ```
 
 8. Append the `p` element to the results `div`.
@@ -429,9 +429,9 @@ For the sake of simplicity, this task defines some static data to add to the dat
 		      paragraph = document.createElement(“p”);
 		      paragraph.textContent = “Added “ + row.name;
                               results.append(paragraph);
-            };
+            	    };
 		  });
-        }
+        	}
 ```
 9. Register the `err_handler()` function that you created earlier to respond to any `onerror` events.
 
@@ -448,11 +448,11 @@ For the sake of simplicity, this task defines some static data to add to the dat
 		    req.onsuccess = () => {
 		      paragraph = document.createElement(“p”);
 		      paragraph.textContent = “Added “ + row.name;
-              results.append(paragraph);
-            };
+              	      results.append(paragraph);
+            	    };
 		    req.onerror = err_handler(event);
 		  });
-        }
+        	}
 ```
 
 
@@ -598,15 +598,15 @@ In this task, you create a `populateTable()` function as a callback for the `cur
 12. Retrieve the values from the record and create a new row. Append the row to the HTML table element.
 ```
 		function makeRow(key, db_values, dt, row, cell) {
-          dbv = db_values.target.result
-          data_row = row.cloneNode(true);
-          vals = [key, dbv.name, dbv.weight];
-          vals.forEach((val) => {
+          	  dbv = db_values.target.result
+          	  data_row = row.cloneNode(true);
+          	  vals = [key, dbv.name, dbv.weight];
+          	  vals.forEach((val) => {
 		    column = cell.cloneNode(true);
 		    column.textContent = val;
 		    data_row.append(column);
-          });
-          dt.append(data_row);
+          	  });
+          	  dt.append(data_row);
 		}
 ```
 
