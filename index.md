@@ -2,13 +2,13 @@ This document provides a tutorial on storing data in a web browser by using Inde
 
 For a more complete tutorial, see [the IndexedDB article in The Modern Javascript Tutorial](https://javascript.info/indexeddb). For documentation about IndexedDB, see [the IndexedDB API page at MDN](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API).
 
-You can find [the code for this tutorial on GitHub](https://github.com/cognigami/idb-example/blob/master/indexedDB_demo.html).
+You can find [the code for this tutorial on GitHub](https://github.com/cognigami/idb-example/blob/master/indexedDB_demo.html), or [try it out](https://cognigami.github.io/idb-example/indexedDB_demo.html).
 
 # Getting Started with IndexedDB
 IndexedDB is the most powerful and flexible way to store data in modern web browsers. Cookies are optimal for storing short strings, whereas IndexedDB can store JSON objects. LocalStorage is a good choice for storing JSON objects, but LocalStorage has some important limitations:
   * Blocks the main execution thread.
   * Offers no organization beyond simple key-value pairs.
-  * Limits records to 5 megabytes.
+  * Limits storage to 5 megabytes.
 
 IndexedDB is a complete, transactional, NoSQL database that enables you to store JSON objects in multiple tables. Unlike a relational (SQL) database, you cannot query IndexedDB. IndexedDB provides sequential access to records according to an index of records. 
 ## Core concepts
