@@ -5,7 +5,10 @@ For a more complete tutorial, see [the IndexedDB article in The Modern Javascrip
 You can find [the code for this tutorial on GitHub](https://github.com/cognigami/idb-example/blob/master/indexedDB_demo.html).
 
 # Getting Started with IndexedDB
-IndexedDB is the most powerful and flexible way to store data in modern web browsers. Cookies are optimal for storing short strings, whereas IndexedDB can store JSON objects. LocalStorage is a good choice for storing JSON objects, but LocalStorage blocks the main execution thread, and offers no organization beyond simple key-value pairs.
+IndexedDB is the most powerful and flexible way to store data in modern web browsers. Cookies are optimal for storing short strings, whereas IndexedDB can store JSON objects. LocalStorage is a good choice for storing JSON objects, but LocalStorage has some important limitations:
+  * Blocks the main execution thread.
+  * Offers no organization beyond simple key-value pairs.
+  * Limits records to 5 megabytes.
 
 IndexedDB is a complete, transactional, NoSQL database that enables you to store JSON objects in multiple tables. Unlike a relational (SQL) database, you cannot query IndexedDB. IndexedDB provides sequential access to records according to an index of records. 
 ## Core concepts
@@ -15,7 +18,7 @@ The web browser can store multiple IndexedDB databases per origin. Each database
 
 IndexedDB is an asynchronous process in the browser. Each interaction with the database follows a pattern of making a request, and providing callback methods to process the result of the request.
 
-Every request that you make to the database must execute in the context of a transaction. The first step in every interaction is to request a Transaction object from the database, then request an ObjectStore object from the transaction. You perform most operations (create, retrieve, update, delete) on the ObjectStore that you retrieve from a Transaction.
+Every request that you make to the database must execute in the context of a transaction. The first step in every interaction is to request a Transaction object from the database, then request an ObjectStore object through the transaction. You perform most operations (create, retrieve, update, delete) on the ObjectStore that you retrieve from a Transaction.
 
 
 ![IndexedDB request flow](./images/request.png)
@@ -27,7 +30,7 @@ The following example is a simple, one-page application. The application provide
 ![Screenshot of the user interface](./images/main.png)
 
 ### Create the user interface: Scaffolding
-Before you begin: create an empty file in your editor.
+_**Before you begin**: create an empty file in your editor._
 
 1\. In an empty file, in your text editor, add an HTML element.
 
@@ -36,7 +39,7 @@ Before you begin: create an empty file in your editor.
 </html>
 ```
 
-2\. Inside your HTML element, add four `button` elements. Give each element a unique id attribute. The buttons enable you to interact with the database.
+2\. Inside your HTML element, add four `button` elements. Give each element a unique id attribute. The buttons enable the user to interact with the database.
 
 ```
 <html>
@@ -73,12 +76,12 @@ Before you begin: create an empty file in your editor.
 </html>
 ```
 
-Save your file with an .html extension. Now, you can open the HTML file in a web browser and see the interface shown in the introduction.
+Save your file with an `.html` extension. Now, you can open the HTML file in a web browser and see the interface shown in the introduction.
 
 ### Create the user interface: Basic interactivity
-Let’s enable the buttons to respond to the code that we write. In this topic, complete the following steps by adding code inside the `script` element that you created in the **Create User Interface: Scaffolding** topic.
+Let’s enable the buttons to respond to the code that we write. In this task, complete the following steps by adding code inside the `script` element that you created in the **Create User Interface: Scaffolding** task.
 
-1\. Create empty functions that should do some work when a user clicks on a button. Because they’re empty, the functions are not useful yet. You start to make them useful by adding code in the following topics. Create a function for each of the four buttons.
+1\. Create empty functions that should do some work when a user clicks on a button. Because they’re empty, the functions are not useful yet. You start to make them useful by adding code in the following tasks. Create one function for each of the four buttons.
 
 ```
 	<script>
@@ -149,12 +152,12 @@ Let’s enable the buttons to respond to the code that we write. In this topic, 
 
 You are ready to start adding behaviour to the page. You can test the buttons by adding the following statement to any function that you called in step 1: `result.textContent = “It worked”;`.
 
-Be sure to remove any test statements before you continue to the next topic.
+Be sure to remove any test statements before you continue to the next task.
 
 ### Open a database
-Recall that IndexedDB is an asynchronous process, and requires you to create callback functions for each interaction. In this topic, you add code to the openDB() function that you created in **Create user interface: Basic interactivity** topic. You also create additional functions to handle callback operations from IndexedDB.
+Recall that IndexedDB is an asynchronous process, and requires you to create callback functions for each interaction. In this task, you add code to the openDB() function that you created in **Create user interface: Basic interactivity** task. You also create additional functions to handle callback operations from IndexedDB.
 
-1\. Inside your `script` element, create a global variable to hold a reference to your database.
+1\. Inside your `script` element, create a global variable named `db` to hold a reference to your database.
 
 ```
 	<script>
@@ -168,7 +171,7 @@ Recall that IndexedDB is an asynchronous process, and requires you to create cal
 	</script>
 ```
 
-2\. In your `openDB()` function, call the `open()` method on IndexedDB to open a database. Specify the name and the version number of the database schema. If the database does not exist, IndexedDB creates a database with the name that you specify in the request.
+2\. In your `openDB()` function, call the `open()` method on the IndexedDB object to open a database. Specify the name and the version number of the database schema. If the database does not exist, IndexedDB creates a database with the name that you specify in the request.
 
 ```
 		let db;
@@ -260,7 +263,7 @@ Recall that IndexedDB is an asynchronous process, and requires you to create cal
 		}
 ```
 
-9\. Before we define our database schema, let’s add another global constant to track the name of our Object Store object. This constant reduces the opportunity for bugs arising from mistyping the name of the ObjectStore. 
+9\. Before we define our database schema, let’s add another global constant to track the name of our ObjectStore object. This constant reduces the opportunity for bugs arising from mistyping the name of the ObjectStore. 
 
 Add the following line between the `db` global variable and the `result` handle at the top of the `script` element.
 
@@ -283,7 +286,7 @@ Add the following line between the `db` global variable and the `result` handle 
 
 Records in SimpleTable now have a key and any other value that you add when you commit a JSON object to that table. For more information about keys, see [the IndexedDB Key Characteristics guide on MDN](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Basic_Terminology).
 
-For a more sophisticated application, you should add a callback for a `versionchange` event and register it with `req.onversionchange`. This can be useful if the user has your application open in more than one tab, and loads a newer version of the database in one tab. The `versionchange` event gives you the opportunity to update your database schema before you try to write to the database while using an outdated schema. 
+For a more sophisticated application, you should add a callback for a `versionchange` event and register it with `req.onversionchange`. This can be useful if the user has your application open in more than one tab, and loads a newer version of the database in one tab. The `versionchange` event gives you the opportunity (in other tabs) to update your database schema before you try to write to the database while using an outdated schema. 
 
 For more information about the `versionchange` event, see [the API documentation on MDN](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/versionchange_event).
 
@@ -303,14 +306,14 @@ For more information about the `versionchange` event, see [the API documentation
 		...
 ```
 
-We can call the `getStore` function each time we want to perform an operation on the database. 
+You can call the `getStore` function each time you want to perform an operation on the database. 
 
 ### Add data to the database
-For the sake of simplicity, this task defines some static data to add to the database each time the user clicks on the **Add Data** button. This task adds code to the `getData()` function that you created earlier.
+For the sake of simplicity, this task defines some static data to add to the database each time that the user clicks on the **Add Data** button. This task adds code to the `addData()` function that you created in a previous task.
 
-1\. In the getData() function, call the `getStore()` function that you created in a previous task to retrieve a reference to the Object Store for SimpleTable.
+1\. In the `addData()` function, call the `getStore()` function that you created in a previous task to retrieve a reference to the object store for SimpleTable.
 ```
-		getData() {
+		addData() {
 		  var store = getStore();
 		}
 ```
@@ -318,7 +321,7 @@ For the sake of simplicity, this task defines some static data to add to the dat
 2\. Create an array of data to add to SimpleTable. Under normal circumstances, this data would come from user input or some generated source. For brevity, let’s add static data.
 
 ```
-		getData() {
+		addData() {
 		  var store = getStore();
 		  var rows = [];
 		  rows.push({name: “Apple”, weight: 102});
@@ -329,7 +332,7 @@ For the sake of simplicity, this task defines some static data to add to the dat
 
 3\. Clear the content of the `div` element used to display results.
 ```
-		getData() {
+		addData() {
 		  var store = getStore();
 		  var rows = [];
 		  rows.push({name: “Apple”, weight: 102});
@@ -342,7 +345,7 @@ For the sake of simplicity, this task defines some static data to add to the dat
 
 4\. Let’s iterate over each of the rows in our array.
 ```
-		getData() {
+		addData() {
 		  var store = getStore();
 		  var rows = [];
 		  rows.push({name: “Apple”, weight: 102});
@@ -355,9 +358,9 @@ For the sake of simplicity, this task defines some static data to add to the dat
         	}
 ```
 
-5\. On each iteration, create a request to add the array element to the SimpleTable Object Store.
+5\. On each iteration, create a request to add the array element to the SimpleTable object store.
 ```
-		getData() {
+		addData() {
 		  var store = getStore();
 		  var rows = [];
 		  rows.push({name: “Apple”, weight: 102});
@@ -372,7 +375,7 @@ For the sake of simplicity, this task defines some static data to add to the dat
 
 6\. Register a callback for the `onsuccess` event. In this case, we’ll create the callback function inline, instead of creating a separate function.
 ```
-		getData() {
+		addData() {
 		  var store = getStore();
 		  var rows = [];
 		  rows.push({name: “Apple”, weight: 102});
@@ -391,7 +394,7 @@ For the sake of simplicity, this task defines some static data to add to the dat
 7\. In the callback function, add a `p` element with the name of the row that you added to the database.
 
 ```
-		getData() {
+		addData() {
 		  var store = getStore();
 		  var rows = [];
 		  rows.push({name: “Apple”, weight: 102});
@@ -412,7 +415,7 @@ For the sake of simplicity, this task defines some static data to add to the dat
 8\. Append the `p` element to the results `div`.
 
 ```
-		getData() {
+		addData() {
 		  var store = getStore();
 		  var rows = [];
 		  rows.push({name: “Apple”, weight: 102});
@@ -424,7 +427,7 @@ For the sake of simplicity, this task defines some static data to add to the dat
 		    req.onsuccess = () => {
 		      paragraph = document.createElement(“p”);
 		      paragraph.textContent = “Added “ + row.name;
-                              results.append(paragraph);
+		      results.append(paragraph);
             	    };
 		  });
         	}
@@ -432,7 +435,7 @@ For the sake of simplicity, this task defines some static data to add to the dat
 9\. Register the `err_handler()` function that you created earlier to respond to any `onerror` events.
 
 ```
-		getData() {
+		addData() {
 		  var store = getStore();
 		  var rows = [];
 		  rows.push({name: “Apple”, weight: 102});
@@ -453,18 +456,18 @@ For the sake of simplicity, this task defines some static data to add to the dat
 
 
 ### Retrieve data
-This task creates the code to display the data in a `table` element. 
+This task creates the code to display data in a `table` element. 
 
-You need two steps to retrieve data from the database: use a `cursor` object to move through an index of keys, and use each key to retrieve the corresponding record from the Object Store.
+You need two steps to retrieve data from the database: use a `cursor` object to move through an index of keys, and use each key to retrieve the corresponding record from the object store.
 
-The `cursor` object sends an `success` event for each key it encounters. You can use the key to retrieve corresponding record from the Object Store. 
+The `cursor` object sends an `success` event for each key it encounters. You can use the key to retrieve corresponding record from the object store. 
 
-In this task, you create a `populateTable()` function as a callback for the `cursor` object’s success event, and a `makeRow()` function as a callback for the Object Store’s `success` event.
+In this task, you create a `populateTable()` function as a callback for the `cursor` object’s success event, and a `makeRow()` function as a callback for the object store’s `success` event.
 
 ![Request flow for retrieving data from the database](./images/popTable.png)
 
 
-1\. Below the empty `addData()` function, add empty functions for the callbacks used in later steps in this task: `populateTable()`, `makeRow()`. You also need a `makeHead()` function to define the table header.
+1\. Below the empty `showData()` function, add empty functions for the callbacks used in later steps in this task: `populateTable()`, `makeRow()`. You also need a `makeHead()` function to define the table header.
 
 ```
 		...
@@ -482,7 +485,7 @@ In this task, you create a `populateTable()` function as a callback for the `cur
 
 ```
 
-2\. In the `showData()` function, call the `getStore()` function that you created in a previous task to retrieve a reference to the Object Store for SimpleTable.
+2\. In the `showData()` function, call the `getStore()` function that you created in a previous task to retrieve a reference to the object store for SimpleTable.
 
 ```
 		function showData() {
@@ -543,7 +546,7 @@ In this task, you create a `populateTable()` function as a callback for the `cur
 		}
 ```
 
-7\. Create a request for a new `cursor` object from the Object Store. Register the `populateTable()` function as the callback for the `success` event. The `populateTable()` function is responsible for creating the table, so pass the relevant data: the cursor, the Object Store, and the HTML elements.
+7\. Create a request for a new `cursor` object from the object store. Register the `populateTable()` function as the callback for the `success` event. The `populateTable()` function is responsible for creating the table, so pass the relevant data: the cursor, the object store, and the HTML elements.
 
 ```
 		function showData() {
@@ -554,7 +557,7 @@ In this task, you create a `populateTable()` function as a callback for the `cur
 		  req.onsuccess = (event) => populateTable(event, store, data_table, row_element, td_element);
 ```
 
-8\. In the `populateTable()` function, update the parameter list to accept the data passed from `showData()`
+8\. In the `populateTable()` function, update the parameter list to accept the data passed from `showData()`.
 
 ```
 		function populateTable(cursor, store, dt, row, cell) {
@@ -562,7 +565,7 @@ In this task, you create a `populateTable()` function as a callback for the `cur
 ```
 
 
-9\. Retrieve the cursor. If it’s valid, get the associated record from the Object Store.
+9\. Retrieve the cursor. If it’s valid, get the associated record from the object store.
 ```
 		function populateTable(cursor, store, dt, row, cell) {
 		  var curs = cursor.target.result;
@@ -572,7 +575,7 @@ In this task, you create a `populateTable()` function as a callback for the `cur
 		}
 ```
 
-10\. If the Object Store sends a `success` event, pass the relevant data to the `makeRow()` function: the key, the record data, the data table, and HTML row and cell elements. 
+10\. If the object store sends a `success` event, pass the relevant data to the `makeRow()` function: the key, the record data, the data table, and HTML row and cell elements. 
 ```
 		function populateTable(cursor, store, dt, row, cell) {
 		  var curs = cursor.target.result;
@@ -647,8 +650,8 @@ You can delete any record for which you have a valid key. In this task, you choo
 2\. Create a variable to store the number of records in the Object Store.
 ```
 		function deleteData() {
-			var store = getStore();
-			var max_records = 0;
+		  var store = getStore();
+		  var max_records = 0;
 		}
 ```
 
@@ -656,20 +659,21 @@ You can delete any record for which you have a valid key. In this task, you choo
 
 ```
 		function deleteData() {
-			var store = getStore();
-			var max_records = 0;
-			var req = store.count();
+		  var store = getStore();
+		  var max_records = 0;
+		  var req = store.count();
 		}
 ```
 
 4\. For the sake of brevity, create an inline function as a callback for the `success` event.
 ```
 		function deleteData() {
-			var store = getStore();
-			var max_records = 0;
-			var req = store.count();
-			req.onsuccess = (event) => {
-			};
+		  var store = getStore();
+		  var max_records = 0;
+		  var req = store.count();
+		  req.onsuccess = (event) => {
+
+		  };
 		}
 ```
 
@@ -677,16 +681,16 @@ You can delete any record for which you have a valid key. In this task, you choo
 
 ```
 		function deleteData() {
-			var store = getStore();
-			var max_records = 0;
-			var req = store.count();
-			req.onsuccess = (event) => {
-				max_records = event.target.result;
-				if (max_records > 0) {
-					del_record = Math.floor(Math.random()*max_records);
-					del_req = store.delete(del_record);
-				}
-			};
+		  var store = getStore();
+		  var max_records = 0;
+		  var req = store.count();
+		  req.onsuccess = (event) => {
+		    max_records = event.target.result;
+		    if (max_records > 0) {
+		      del_record = Math.floor(Math.random()*max_records);
+		      del_req = store.delete(del_record);
+		    }
+		  };
 		}
 ```
 
@@ -694,19 +698,19 @@ You can delete any record for which you have a valid key. In this task, you choo
 
 ```
 		function deleteData() {
-			var store = getStore();
-			var max_records = 0;
-			var req = store.count();
-			req.onsuccess = (event) => {
-				max_records = event.target.result;
-				if (max_records > 0) {
-					del_record = Math.floor(Math.random()*max_records);
-					del_req = store.delete(del_record);
-					del_req.onsuccess = (event) => {
-						showData();
-					};
-				}
-			};
+		  var store = getStore();
+		  var max_records = 0;
+		  var req = store.count();
+		  req.onsuccess = (event) => {
+		    max_records = event.target.result;
+		    if (max_records > 0) {
+		      del_record = Math.floor(Math.random()*max_records);
+		      del_req = store.delete(del_record);
+		      del_req.onsuccess = (event) => {
+			showData();
+		      };
+		    }
+		  };
 		}
 ```
 
