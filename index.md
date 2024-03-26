@@ -1,8 +1,8 @@
 This document provides a tutorial on storing data in a web browser by using IndexedDB. The lesson is short, focused, and has no dependencies on external libraries. The document assumes that you have some experience with modern web development.
 
-For a more complete tutorial, see the IndexedDB article in The Modern Javascript Tutorial. For documentation about IndexedDB, see the IndexedDB API page at MDN.
+For a more complete tutorial, see [the IndexedDB article in The Modern Javascript Tutorial](https://javascript.info/indexeddb). For documentation about IndexedDB, see [the IndexedDB API page at MDN](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API).
 
-You can find the code for this tutorial on GitHub.
+You can find [the code for this tutorial on GitHub](https://github.com/cognigami/idb-example/blob/master/indexedDB_demo.html).
 
 # Getting Started with IndexedDB
 IndexedDB is the most powerful and flexible way to store data in modern web browsers. Cookies are optimal for storing short strings, whereas IndexedDB can store JSON objects. LocalStorage is a good choice for storing JSON objects, but LocalStorage blocks the main execution thread, and offers no organization beyond simple key-value pairs.
@@ -81,7 +81,6 @@ Let’s enable the buttons to respond to the code that we write. In this topic, 
 1\. Create empty functions that should do some work when a user clicks on a button. Because they’re empty, the functions are not useful yet. You start to make them useful by adding code in the following topics. Create a function for each of the four buttons.
 
 ```
-    ...
 	<script>
 		function openDB() {
 		}
@@ -97,7 +96,6 @@ Let’s enable the buttons to respond to the code that we write. In this topic, 
 2\. Create a handle for the `div` element. Add the keyword `const` before the variable name so that the handle is read-only in the code.
 
 ```
-    ...
 	<script>
 		const result = document.getElementById("result");
 
@@ -115,9 +113,8 @@ Let’s enable the buttons to respond to the code that we write. In this topic, 
 
 3\. Create handles for each of the `button` elements. 
 ```
-    ...
 	<script>
-		…
+		...
 
 		function deleteData() {
 		}
@@ -132,7 +129,6 @@ Let’s enable the buttons to respond to the code that we write. In this topic, 
 4\. Add an event listener to each of the `button` elements by using the handles that you created. Call the `addEventListener` method; listen for the `click` event, and invoke the corresponding function that you created in step 1.
 
 ```
-    ...
 	<script>
 		...
 
@@ -206,7 +202,7 @@ Recall that IndexedDB is an asynchronous process, and requires you to create cal
 4\. On your request object, specify the function to invoke for each condition. When IndexedDB invokes a callback function, it passes an `event` object that contains the result of the request. Pass the `event` object to the function.
 
 ```
-        let db;
+	        let db;
 		
 		const result = document.getElementById("result");
 
@@ -285,11 +281,11 @@ Add the following line between the `db` global variable and the `result` handle 
 		}
 ```
 
-Records in SimpleTable now have a key and any other value that you add when you commit a JSON object to that table. For more information about keys, see the IndexedDB Key Characteristics guide on MDN.
+Records in SimpleTable now have a key and any other value that you add when you commit a JSON object to that table. For more information about keys, see [the IndexedDB Key Characteristics guide on MDN](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Basic_Terminology).
 
 For a more sophisticated application, you should add a callback for a `versionchange` event and register it with `req.onversionchange`. This can be useful if the user has your application open in more than one tab, and loads a newer version of the database in one tab. The `versionchange` event gives you the opportunity to update your database schema before you try to write to the database while using an outdated schema. 
 
-For more information about the `versionchange` event, see the API documentation on MDN.
+For more information about the `versionchange` event, see [the API documentation on MDN](https://developer.mozilla.org/en-US/docs/Web/API/IDBDatabase/versionchange_event).
 
 11\. Add a helper function to create a Transaction object and return a reference to the `SimpleTable` Object Store.
 
@@ -457,11 +453,11 @@ For the sake of simplicity, this task defines some static data to add to the dat
 
 
 ### Retrieve data
-This task creates the code to displays the data in a `table` element. 
+This task creates the code to display the data in a `table` element. 
 
 You need two steps to retrieve data from the database: use a `cursor` object to move through an index of keys, and use each key to retrieve the corresponding record from the Object Store.
 
-The `cursor` object sends an `success` event for each key it encounters. You can use the key to retrieve corresponding record from Object Store. 
+The `cursor` object sends an `success` event for each key it encounters. You can use the key to retrieve corresponding record from the Object Store. 
 
 In this task, you create a `populateTable()` function as a callback for the `cursor` object’s success event, and a `makeRow()` function as a callback for the Object Store’s `success` event.
 
@@ -717,7 +713,7 @@ You can delete any record for which you have a valid key. In this task, you choo
 ## Next steps
 You now have a fully functional web page that stores and retrieves data by using the brower’s IndexedDB API. You can play with this example, try to generate error conditions, and extend it as needed.
 
-MDN maintains a list of libraries that wrap the IndexedDB API for a variety of use-cases. If your application uses the Promise pattern of asynchronous programming (async/await), Jake Archibald’s IDB library is a common tool.
+MDN maintains [a list of libraries that wrap the IndexedDB API](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB#libraries) for a variety of use-cases. If your application uses the Promise pattern of asynchronous programming (async/await), [Jake Archibald’s IDB library](https://github.com/jakearchibald/idb) is a common tool.
 
 
 
