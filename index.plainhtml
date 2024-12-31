@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Getting started with IndexedDB</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/github-markdown.css">
+    <script type="text/javascript" src="js/main.js"></script>
+    <script type="text/javascript" src="js/ace/ace.js"></script>
+    <script type="text/javascript" src="js/marked.min.js"></script>
+    <script type="text/javascript" src="js/ace/mode-markdown.js"></script>
+  </head>
+<body>
+<p>This document provides a tutorial on storing data in a web browser by using IndexedDB. The lesson is short, focused, and has no dependencies on external libraries. The document assumes that you have some experience with modern web development.</p>
+<p>For a more complete tutorial, see the IndexedDB article in The Modern Javascript Tutorial. For documentation about IndexedDB, see the IndexedDB API page at MDN.</p>
+<p>You can find the code for this tutorial on GitHub.</p>
+<h1>Getting Started with IndexedDB</h1>
+<p>IndexedDB is the most powerful and flexible way to store data in modern web browsers. Cookies are optimal for storing short strings, whereas IndexedDB can store JSON objects. LocalStorage is a good choice for storing JSON objects, but LocalStorage blocks the main execution thread, and offers no organization beyond simple key-value pairs.</p>
+<p>IndexedDB is a complete, transactional, NoSQL database that enables you to store JSON objects in multiple tables. Unlike a relational (SQL) database, you cannot query IndexedDB. IndexedDB provides sequential access to records according to an index of records. </p>
+<h2>Core concepts</h2>
+<p>The web browser can store multiple IndexedDB databases per origin. Each database contains multiple tables, known as Object Stores. An object store contains a key and a collection of field values for each record. As a developer, you can define one or more indexes over any field in your record schema.</p>
+
+
+<p>IndexedDB is an asynchronous process in the browser. Each interaction with the database follows a pattern of making a request, and providing callback methods to process the result of the request.</p>
+<p>Every request that you make to the database must execute in the context of a transaction. The first step in every interaction is to request a Transaction object from the database, then request an ObjectStore object from the transaction. You perform most operations (create, retrieve, update, delete) on the ObjectStore that you retrieve from a Transaction.</p>
+
+
+<h2>Example</h2>
+<p>The following example is a simple, one-page application. The application provides buttons to open the database, add (pre-defined) records, display records, and delete one record at random. The results are displayed in a <code>div</code> element on the page.</p>
+<h3>Create the user interface: Scaffolding</h3>
+<p>Before you begin: create an empty file in your editor.</p>
+<ol>
+<li>In an empty file, in your text editor, add an HTML element.</li>
+</ol>
+<pre><code>&lt;html&gt;
+&lt;/html&gt;
+</code></pre>
+<ol start="2">
+<li>Inside your HTML element, add four <code>button</code> elements. Give each element a unique id attribute. The buttons enable you to interact with the database.</li>
+</ol>
+<pre><code>&lt;html&gt;
+    &lt;button id="openDB"&gt;Open DB object&lt;/button&gt;
+    &lt;button id="addData"&gt;Add data&lt;/button&gt;
+    &lt;button id="showData"&gt;Show Data&lt;/button&gt;
+    &lt;button id="deleteData"&gt;Delete random row&lt;/button&gt;
+&lt;/html&gt;
+</code></pre>
+<ol start="3">
+<li>Below the <code>button</code> elements, add a <code>div</code> element. Give the <code>div</code> element a unique <code>id</code> attribute. You can use the <code>div</code> element to display the status of your database operations.</li>
+</ol>
+<pre><code>&lt;html&gt;
+    &lt;button id="openDB"&gt;Open DB object&lt;/button&gt;
+    &lt;button id="addData"&gt;Add data&lt;/button&gt;
+    &lt;button id="showData"&gt;Show Data&lt;/button&gt;
+    &lt;button id="deleteData"&gt;Delete random row&lt;/button&gt;
+&lt;div id="result"&gt;Results will show here.&lt;/div&gt;
+&lt;/html&gt;
+</code></pre>
+<ol start="4">
+<li>Add a <code>script</code> element to hold the code that interacts with the database.</li>
+</ol>
+<pre><code>&lt;html&gt;
+    &lt;button id="openDB"&gt;Open DB object&lt;/button&gt;
+    &lt;button id="addData"&gt;Add data&lt;/button&gt;
+    &lt;button id="showData"&gt;Show Data&lt;/button&gt;
+    &lt;button id="deleteData"&gt;Delete random row&lt;/button&gt;
+&lt;div id="result"&gt;Results will show here.&lt;/div&gt;
+    &lt;script&gt;
+    &lt;/script&gt;
+&lt;/html&gt;
+</code></pre>
+<p>Save your file with an .html extension. Now, you can open the HTML file in a web browser and see the interface shown in the introduction.</p>
+<h3>Create the user interface: Basic interactivity</h3>
+<p>Let’s enable the buttons to respond to the code that we write. In this topic, complete the following steps by adding code inside the <code>script</code> element that you created in the <strong>Create User Interface: Scaffolding</strong> topic.</p>
+<ol>
+<li>Create empty functions that should do some work when a user clicks on a button. Because they’re empty, the functions are not useful yet. You start to make them useful by adding code in the following topics. Create a function for each of the four buttons.</li>
+</ol>
+<pre><code>    ...
+    &lt;script&gt;
+        function openDB() {
+        }
+        function addData() {
+        }
+        function showData() {
+        }
+        function deleteData() {
+        }
+    &lt;/script&gt;
+</code></pre>
+<ol start="2">
+<li>Create a handle for the <code>div</code> element. Add the keyword <code>const</code> before the variable name so that the handle is read-only in the code.</li>
+</ol>
+<pre><code>    ...
+    &lt;script&gt;
+        const result = document.getElementById("result");
+
+        function openDB() {
+        }
+        function addData() {
+        }
+        function showData() {
+        }
+        function deleteData() {
+        }
+
+    &lt;/script&gt;
+</code></pre>
+<ol start="3">
+<li>Create handles for each of the <code>button</code> elements.</li>
+</ol>
+<pre><code>    ...
+    &lt;script&gt;
+        …
+
+        function deleteData() {
+        }
+
+        open_button = document.getElementById("openDB");
+        add_button = document.getElementById("addData");
+        show_button = document.getElementById("showData");
+        delete_button = document.getElementById("deleteData");
+    &lt;/script&gt;
+</code></pre>
+<ol start="4">
+<li>Add an event listener to each of the <code>button</code> elements by using the handles that you created. Call the <code>addEventListener</code> method; listen for the <code>click</code> event, and invoke the corresponding function that you created in step 1.</li>
+</ol>
+<pre><code>    ...
+    &lt;script&gt;
+        ...
+
+        function deleteData() {
+        }
+
+        open_button = document.getElementById("openDB");
+        add_button = document.getElementById("addData");
+        show_button = document.getElementById("showData");
+        delete_button = document.getElementById("deleteData");
+
+        open_button.addEventListener("click", () =&gt; openDB());
+        add_button.addEventListener("click", () =&gt; addData());
+        show_button.addEventListener("click", () =&gt; showData());
+        delete_button.addEventListener("click", () =&gt; deleteData());
+    &lt;/script&gt;
+</code></pre>
+<p>You are ready to start adding behaviour to the page. You can test the buttons by adding the following statement to any function that you called in step 1: <code>result.textContent = “It worked”;</code>.</p>
+<p>Be sure to remove any test statements before you continue to the next topic.</p>
+<h3>Open a database</h3>
+<p>Recall that IndexedDB is an asynchronous process, and requires you to create callback functions for each interaction. In this topic, you add code to the openDB() function that you created in <strong>Create user interface: Basic interactivity</strong> topic. You also create additional functions to handle callback operations from IndexedDB.</p>
+<ol>
+<li>Inside your <code>script</code> element, create a global variable to hold a reference to your database.</li>
+</ol>
+<pre><code>    &lt;script&gt;
+        let db;
+
+        const result = document.getElementById("result");
+
+        function openDB() {
+        }
+        ...
+    &lt;/script&gt;
+</code></pre>
+<ol start="2">
+<li>In your <code>openDB()</code> function, call the <code>open()</code> method on IndexedDB to open a database. Specify the name and the version number of the database schema. If the database does not exist, IndexedDB creates a database with the name that you specify in the request.</li>
+</ol>
+<pre><code>        let db;
+
+        const result = document.getElementById("result");
+
+        function openDB() {
+          req = indexedDB.open(“SimpleDB”, 1);
+        }
+</code></pre>
+<ol start="3">
+<li>Create empty functions to handle callback operations for the following conditions: success, error, and schema definition required.</li>
+</ol>
+<pre><code>        let db;
+
+        const result = document.getElementById("result");
+
+        function openDB() {
+          req = indexedDB.open(“SimpleDB”, 1);
+        }
+
+        function dbOkay() {
+        }
+        function err_handler() {
+        }		
+        function defineDBSchema() {
+        }		
+</code></pre>
+<ol start="4">
+<li>On your request object, specify the function to invoke for each condition. When IndexedDB invokes a callback function, it passes an <code>event</code> object that contains the result of the request. Pass the <code>event</code> object to the function.</li>
+</ol>
+<pre><code>        let db;
+        
+        const result = document.getElementById("result");
+
+        function openDB() {
+          const req = indexedDB.open("SimpleDB", 1);
+          req.onsuccess = (event) =&gt; dbOkay(event);
+          req.onerror = (event) =&gt; err_handler(event);
+          req.onupgradeneeded = (event) =&gt; defineDBSchema(event);
+        }
+
+        function dbOkay() {
+        }
+        function err_handler() {
+        }		
+        function defineDBSchema() {
+        }
+</code></pre>
+<ol start="5">
+<li>Update your callback function signatures to accept the <code>event</code> object.</li>
+</ol>
+<pre><code>        ...
+        function dbOkay(event) {
+        }
+        function err_handler(event) {
+        }		
+        function defineDBSchema(event) {
+        }
+</code></pre>
+<ol start="6">
+<li>If the open request is successful, assign the database reference to the global variable that you created in step 1.</li>
+</ol>
+<pre><code>        ...
+        function dbOkay(event) {
+          db = event.target.result;
+        }
+</code></pre>
+<ol start="7">
+<li>Print the status in the result <code>div</code> element that you created earlier.</li>
+</ol>
+<pre><code>        ...
+        function dbOkay(event) {
+          db = event.target.result;
+          result.textContent = “Got the DB”;
+        }
+</code></pre>
+<ol start="8">
+<li>Update your <code>err_handler()</code> function to report the error to the user.</li>
+</ol>
+<pre><code>        ...
+        function err_handler(event) {
+          result.textContent = “The following error occurred: ” + event.target.errorCode;
+        }
+</code></pre>
+<ol start="9">
+<li>Before we define our database schema, let’s add another global constant to track the name of our Object Store object. This constant reduces the opportunity for bugs arising from mistyping the name of the ObjectStore.</li>
+</ol>
+<p>Add the following line between the <code>db</code> global variable and the <code>result</code> handle at the top of the <code>script</code> element.</p>
+<pre><code>    &lt;script&gt;
+        let db;
+
+        const STORE_NAME = “SimpleStore”;
+        const result = document.getElementById(“result”);
+        ...
+</code></pre>
+<ol start="10">
+<li>Specify your database schema in the <code>defineDBSchema()</code> function. Our database has a single table (SimpleTable), and no indexes. The records should have a <code>key</code> field named “id”, and the table should be responsible for incrementing the value of the field.</li>
+</ol>
+<pre><code>        function defineDBSchema(event) {
+          event.target.result.createObjectStore(STORE_NAME, {keyPath: “id”, autoincrement: true});
+        }
+</code></pre>
+<p>Records in SimpleTable now have a key and any other value that you add when you commit a JSON object to that table. For more information about keys, see the IndexedDB Key Characteristics guide on MDN.</p>
+<p>For a more sophisticated application, you should add a callback for a <code>versionchange</code> event and register it with <code>req.onversionchange</code>. This can be useful if the user has your application open in more than one tab, and loads a newer version of the database in one tab. The <code>versionchange</code> event gives you the opportunity to update your database schema before you try to write to the database while using an outdated schema. </p>
+<p>For more information about the <code>versionchange</code> event, see the API documentation on MDN.</p>
+<ol start="11">
+<li>Add a helper function to create a Transaction object and return a reference to the <code>SimpleTable</code> Object Store.</li>
+</ol>
+<pre><code>        ...
+        function defineDBSchema(event) {
+          event.target.result.createObjectStore(STORE_NAME, {keyPath: “id”, autoincrement: true});
+        }
+
+        function getStore() {
+          tx = db.Transaction(STORE_NAME, “readwrite”);
+          return tx.objectStore(STORE_NAME);
+        }
+
+        ...
+</code></pre>
+<p>We can call the <code>getStore</code> function each time we want to perform an operation on the database. </p>
+<h3>Add data to the database</h3>
+<p>For the sake of simplicity, this task defines some static data to add to the database each time the user clicks on the <strong>Add Data</strong> button. This task adds code to the <code>getData()</code> function that you created earlier.</p>
+<ol>
+<li>In the getData() function, call the <code>getStore()</code> function that you created in a previous task to retrieve a reference to the Object Store for SimpleTable.</li>
+</ol>
+<pre><code>        getData() {
+          var store = getStore();
+        }
+</code></pre>
+<ol start="2">
+<li>Create an array of data to add to SimpleTable. Under normal circumstances, this data would come from user input or some generated source. For brevity, let’s add static data.</li>
+</ol>
+<pre><code>        getData() {
+          var store = getStore();
+          var rows = [];
+          rows.push({name: “Apple”, weight: 102});
+          rows.push({name: “Banana”, weight: 125});
+          rows.push({name: “Orange”, weight: 141.7});
+        }
+</code></pre>
+<ol start="3">
+<li>Clear the content of the <code>div</code> element used to display results.</li>
+</ol>
+<pre><code>        getData() {
+          var store = getStore();
+          var rows = [];
+          rows.push({name: “Apple”, weight: 102});
+          rows.push({name: “Banana”, weight: 125});
+          rows.push({name: “Orange”, weight: 141.7});
+          results.textContent = “”
+        }
+</code></pre>
+<ol start="4">
+<li>Let’s iterate over each of the rows in our array.</li>
+</ol>
+<pre><code>        getData() {
+          var store = getStore();
+          var rows = [];
+          rows.push({name: “Apple”, weight: 102});
+          rows.push({name: “Banana”, weight: 125});
+          rows.push({name: “Orange”, weight: 141.7});
+          results.textContent = “”
+          rows.forEach((row) =&gt; {
+            
+          });
+        }
+</code></pre>
+<ol start="5">
+<li>On each iteration, create a request to add the array element to the SimpleTable Object Store.</li>
+</ol>
+<pre><code>        getData() {
+          var store = getStore();
+          var rows = [];
+          rows.push({name: “Apple”, weight: 102});
+          rows.push({name: “Banana”, weight: 125});
+          rows.push({name: “Orange”, weight: 141.7});
+          results.textContent = “”
+          rows.forEach((row) =&gt; {
+            req = store.add(row);
+          });
+        }
+</code></pre>
+<ol start="6">
+<li>Register a callback for the <code>onsuccess</code> event. In this case, we’ll create the callback function inline, instead of creating a separate function.</li>
+</ol>
+<pre><code>        getData() {
+          var store = getStore();
+          var rows = [];
+          rows.push({name: “Apple”, weight: 102});
+          rows.push({name: “Banana”, weight: 125});
+          rows.push({name: “Orange”, weight: 141.7});
+          results.textContent = “”
+          rows.forEach((row) =&gt; {
+            req = store.add(row);
+            req.onsuccess = () =&gt; {
+
+            };
+          });
+        }
+</code></pre>
+<ol start="7">
+<li>In the callback function, add a <code>p</code> element with the name of the row that you added to the database.</li>
+</ol>
+<pre><code>        getData() {
+          var store = getStore();
+          var rows = [];
+          rows.push({name: “Apple”, weight: 102});
+          rows.push({name: “Banana”, weight: 125});
+          rows.push({name: “Orange”, weight: 141.7});
+          results.textContent = “”
+          rows.forEach((row) =&gt; {
+            req = store.add(row);
+            req.onsuccess = () =&gt; {
+              paragraph = document.createElement(“p”);
+              paragraph.textContent = “Added “ + row.name;
+
+            };
+          });
+        }
+</code></pre>
+<ol start="7">
+<li>Append the <code>p</code> element to the results <code>div</code>.</li>
+</ol>
+<pre><code>        getData() {
+          var store = getStore();
+          var rows = [];
+          rows.push({name: “Apple”, weight: 102});
+          rows.push({name: “Banana”, weight: 125});
+          rows.push({name: “Orange”, weight: 141.7});
+          results.textContent = “”
+          rows.forEach((row) =&gt; {
+            req = store.add(row);
+            req.onsuccess = () =&gt; {
+              paragraph = document.createElement(“p”);
+              paragraph.textContent = “Added “ + row.name;
+                              results.append(paragraph);
+            };
+          });
+        }
+</code></pre>
+<ol start="7">
+<li>Register the <code>err_handler()</code> function that you created earlier to respond to any <code>onerror</code> events.</li>
+</ol>
+<pre><code>        getData() {
+          var store = getStore();
+          var rows = [];
+          rows.push({name: “Apple”, weight: 102});
+          rows.push({name: “Banana”, weight: 125});
+          rows.push({name: “Orange”, weight: 141.7});
+          results.textContent = “”
+          rows.forEach((row) =&gt; {
+            req = store.add(row);
+            req.onsuccess = () =&gt; {
+              paragraph = document.createElement(“p”);
+              paragraph.textContent = “Added “ + row.name;
+              results.append(paragraph);
+            };
+            req.onerror = err_handler(event);
+          });
+        }
+</code></pre>
+<h3>Retrieve data</h3>
+<p>This task creates the code to displays the data in a <code>table</code> element. </p>
+<p>You need two steps to retrieve data from the database: use a <code>cursor</code> object to move through an index of keys, and use each key to retrieve the corresponding record from the Object Store.</p>
+<p>The <code>cursor</code> object sends an <code>success</code> event for each key it encounters. You can use the key to retrieve corresponding record from Object Store. </p>
+<p>In this task, you create a <code>populateTable()</code> function as a callback for the <code>cursor</code> object’s success event, and a <code>makeRow()</code> function as a callback for the Object Store’s <code>success</code> event.</p>
+
+
+<ol>
+<li>Below the empty <code>addData()</code> function, add empty functions for the callbacks used in later steps in this task: <code>populateTable()</code>, <code>makeRow()</code>. You also need a <code>makeHead()</code> function to define the table header.</li>
+</ol>
+<pre><code>        ...
+        function showData() {
+        }
+
+        function makeHead() {
+        }
+
+        function populateTable() {
+        }
+
+        function makeRow() {
+        }
+</code></pre>
+<ol start="2">
+<li>In the <code>showData()</code> function, call the <code>getStore()</code> function that you created in a previous task to retrieve a reference to the Object Store for SimpleTable.</li>
+</ol>
+<pre><code>        function showData() {
+          var store = getStore();
+        }
+</code></pre>
+<ol start="3">
+<li>Create HTML elements for the table.</li>
+</ol>
+<pre><code>        function showData() {
+          var store = getStore();
+          var data_table = document.createElement("table");
+          var row_element = document.createElement("tr");
+          var td_element = document.createElement("td");
+        }
+</code></pre>
+<ol start="4">
+<li>Pass the <code>row_element</code> handle and the <code>td_element</code> handle to the <code>makeHead()</code> function to create a table header.</li>
+</ol>
+<pre><code>        function showData() {
+          var store = getStore();
+          var data_table = document.createElement("table");
+          var row_element = document.createElement("tr");
+          var td_element = document.createElement("td");
+
+          var head_row = makeHead(row_element, td_element);
+        }
+</code></pre>
+<ol start="5">
+<li>In the <code>makeHead()</code> function, update the parameter list to accept the row and cell elements passed from <code>showData()</code>, and define the header row and return the row.</li>
+</ol>
+<pre><code>        function makeHead(row, cell) {
+          var col_heads = ["ID", "Fruit", "Weight"];
+          var head_row = row.cloneNode(true);
+          col_heads.forEach((col) =&gt; {
+            column = cell.cloneNode(true);
+            column.textContent = col;
+            head_row.append(column);
+          });
+          return head_row;
+        }
+</code></pre>
+<ol start="6">
+<li>In the <code>showData()</code> function, add the table header to the <code>table</code> element.</li>
+</ol>
+<pre><code>        function showData() {
+          var store = getStore();
+          var data_table = document.createElement("table");
+          var row_element = document.createElement("tr");
+          var td_element = document.createElement("td");
+
+          var head_row = makeHead(row_element, td_element);
+          data_table.append(head_row);
+        }
+</code></pre>
+<ol start="7">
+<li>Create a request for a new <code>cursor</code> object from the Object Store. Register the <code>populateTable()</code> function as the callback for the <code>success</code> event. The <code>populateTable()</code> function is responsible for creating the table, so pass the relevant data: the cursor, the Object Store, and the HTML elements.</li>
+</ol>
+<pre><code>        function showData() {
+
+          ...
+
+          var req = store.openCursor();
+          req.onsuccess = (event) =&gt; populateTable(event, store, data_table, row_element, td_element);
+</code></pre>
+<ol start="8">
+<li>In the <code>populateTable()</code> function, update the parameter list to accept the data passed from <code>showData()</code></li>
+</ol>
+<pre><code>        function populateTable(cursor, store, dt, row, cell) {
+        }
+</code></pre>
+<ol start="9">
+<li>Retrieve the cursor. If it’s valid, get the associated record from the Object Store.</li>
+</ol>
+<pre><code>        function populateTable(cursor, store, dt, row, cell) {
+          var curs = cursor.target.result;
+          if (curs) {
+            req = store.get(curs.key);
+          }
+        }
+</code></pre>
+<ol start="9">
+<li>If the Object Store sends a <code>success</code> event, pass the relevant data to the <code>makeRow()</code> function: the key, the record data, the data table, and HTML row and cell elements.</li>
+</ol>
+<pre><code>        function populateTable(cursor, store, dt, row, cell) {
+          var curs = cursor.target.result;
+          if (curs) {
+            req = store.get(curs.key);
+            req.onsuccess = (event) =&gt; makeRow(curs.key, event, dt, row, cell);
+          }
+        }
+</code></pre>
+<ol start="10">
+<li>In the <code>makeRow()</code> function, update the parameter list to accept the data passed from <code>populateTable()</code>.</li>
+</ol>
+<pre><code>        function makeRow(key, db_values, dt, row, cell) {
+        }
+</code></pre>
+<ol start="11">
+<li>Retrieve the values from the record and create a new row. Append the row to the HTML table element.</li>
+</ol>
+<pre><code>        function makeRow(key, db_values, dt, row, cell) {
+          dbv = db_values.target.result
+          data_row = row.cloneNode(true);
+          vals = [key, dbv.name, dbv.weight];
+          vals.forEach((val) =&gt; {
+            column = cell.cloneNode(true);
+            column.textContent = val;
+            data_row.append(column);
+          });
+          dt.append(data_row);
+        }
+</code></pre>
+<ol start="12">
+<li>In the <code>populateTable()</code> function, ask for the next key from the cursor.</li>
+</ol>
+<pre><code>        function populateTable(cursor, store, dt, row, cell) {
+          var curs = cursor.target.result;
+          if (curs) {
+            req = store.get(curs.key);
+            req.onsuccess = (event) =&gt; makeRow(curs.key, event, dt, row, cell);
+            curs.continue();
+          }
+        }
+</code></pre>
+<ol start="13">
+<li>In the <code>showData()</code> function, Register the <code>err_handler()</code> function that you created in a previous task as the callback for the <code>error</code> event.</li>
+</ol>
+<pre><code>        function showData() {
+
+          ...
+
+          var req = store.openCursor();
+          req.onsuccess = (event) =&gt; populateTable(event, store, data_table, row_element, td_element);
+
+          req.onerror = (event) =&gt; err_handler(event);
+</code></pre>
+<h3>Delete data</h3>
+<p>You can delete any record for which you have a valid key. In this task, you choose a key at random, and delete the associated record.</p>
+<ol>
+<li>In the <code>deleteData()</code> function, call the <code>getStore()</code> function that you created in a previous task to retrieve a reference to the Object Store for SimpleTable.</li>
+</ol>
+<pre><code>        function deleteData() {
+            var store = getStore();
+        }
+</code></pre>
+<ol start="2">
+<li>Create a variable to store the number of records in the Object Store.</li>
+</ol>
+<pre><code>        function deleteData() {
+            var store = getStore();
+            var max_records = 0;
+        }
+</code></pre>
+<ol start="3">
+<li>Create a request to count the number of records in the Object Store.</li>
+</ol>
+<pre><code>        function deleteData() {
+            var store = getStore();
+            var max_records = 0;
+            var req = store.count();
+        }
+</code></pre>
+<ol start="4">
+<li>For the sake of brevity, create an inline function as a callback for the <code>success</code> event.</li>
+</ol>
+<pre><code>        function deleteData() {
+            var store = getStore();
+            var max_records = 0;
+            var req = store.count();
+            req.onsuccess = (event) =&gt; {
+            };
+        }
+</code></pre>
+<ol start="5">
+<li>If the number of records is greater than zero, choose one at random, and create a request to delete it.</li>
+</ol>
+<pre><code>        function deleteData() {
+            var store = getStore();
+            var max_records = 0;
+            var req = store.count();
+            req.onsuccess = (event) =&gt; {
+                max_records = event.target.result;
+                if (max_records &gt; 0) {
+                    del_record = Math.floor(Math.random()*max_records);
+                    del_req = store.delete(del_record);
+                }
+            };
+        }
+</code></pre>
+<ol start="6">
+<li>If the request is successful, regenerate the data table.</li>
+</ol>
+<pre><code>        function deleteData() {
+            var store = getStore();
+            var max_records = 0;
+            var req = store.count();
+            req.onsuccess = (event) =&gt; {
+                max_records = event.target.result;
+                if (max_records &gt; 0) {
+                    del_record = Math.floor(Math.random()*max_records);
+                    del_req = store.delete(del_record);
+                    del_req.onsuccess = (event) =&gt; {
+                        showData();
+                    };
+                }
+            };
+        }
+</code></pre>
+<h2>Next steps</h2>
+<p>You now have a fully functional web page that stores and retrieves data by using the brower’s IndexedDB API. You can play with this example, try to generate error conditions, and extend it as needed.</p>
+<p>MDN maintains a list of libraries that wrap the IndexedDB API for a variety of use-cases. If your application uses the Promise pattern of asynchronous programming (async/await), Jake Archibald’s IDB library is a common tool.</p>
+</body>
+</html>
